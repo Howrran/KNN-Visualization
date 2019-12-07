@@ -8,16 +8,13 @@
     <h1>Форма </h1>
     <form method="post" enctype="multipart/form-data" action="/form/">
         {% csrf_token %}
-        <label for="feedback-text">Відгук</label>
-        <input id="feedback-text" type="text" name="text" required>
-
-        <label for="feedback-grade">Оцінка</label>
-        <input id="feedback-grade" type="number" name="grade" required>
-
-        <label for="feedback-image">Фотографія</label>
-        <input id="feedback-image" type="file" name="image">
+        {{ form }}
 
         <input id="feedback-submit" type="submit">
     </form>
+
+    {{ x }}
+    {{ y }}
+    {{ z }}
 </body>
 </html>
