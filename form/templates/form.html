@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Форма </h1>
+    <form method="post" enctype="multipart/form-data" action="/form/">
+        {% csrf_token %}
+        <label for="feedback-text">Отзив</label>
+        <input id="feedback-text" type="text" name="text">
+
+        <label for="feedback-grade">Оценка</label>
+        <input id="feedback-grade" type="number" name="grade">
+
+        <label for="feedback-image">Фотографія</label>
+        <input id="feedback-image" type="file" name="image">
+
+        <input id="feedback-submit" type="submit">
+    </form>
+</body>
+</html>
