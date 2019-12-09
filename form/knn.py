@@ -2,24 +2,25 @@ import plotly.graph_objs as go
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from math import sqrt
 
+# Class of 3D Point
 class Point:
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
         self.z = z
 
+    # Set Point`s Class
     def set_class(self, clas):
         self.clas = clas
 
-
+# Realize KNN algorithm
 class KNN:
-
     classes = [] # our known classes
     points = [] # array of points
-    colors = ['red', 'green', 'blue', 'yellow', 'pink']
+    colors = ['red', 'green', 'blue', 'yellow', 'pink'] # colors for point of each class
 
     def __init__(self, k):
-        self.k = k
+        self.k = k # set k neighbours to check
 
     # add new class to the class list
     def add_clas(self, clas):
@@ -31,7 +32,7 @@ class KNN:
     def show(self):
         print(f'clases = {self.classes} \npoints = {self.points}')
 
-
+    # Distance between 2 points
     def get_distance(self, Point1, Point2):
         return sqrt((Point2.x - Point1.x)**2 + (Point2.y - Point1.y)**2 + (Point2.z - Point1.z)**2)
 
@@ -47,48 +48,67 @@ class KNN:
             p.set_class(clas)
             self.points.append(p)
 
-
-
+    # add point which class we don`t know
     def add_new_point(self, x, y, z):
         new_point = Point(x, y, z)
+
+        # class_list is a list of nearest neighbours
+        # class_count is a dict of nearest classes and their amount
         distances, class_count, class_list = [], {}, []
 
+        # calculate distace for each point
         for point in self.points:
             distances.append((self.get_distance(new_point, point), point.clas))
 
+        # if we have less than k points, we take all
         if len(distances) < self.k:
             for i in range(len(distances)):
                 class_list.append(distances[i][1])
 
             class_list.sort()
 
+            # count how many neighbours of each class we have
             for i in class_list:
                 if i not in class_count:
                     class_count[i] = 1
                 else:
                     class_count[i] += 1
         else:
-            expander = self.k - 1
-            if distances[self.k - 1] == distances[self.k]:
+            expander = self.k
 
-                while distances[expander] == distances[expander + 1]:
-                    expander += 1
+            # if distance[k] == distances[k + 1] we need to take k+1 neighbours
+            if len(distances) > self.k:
+                if distances[self.k - 1] == distances[self.k]:
+                    expander = self.k - 1
+                    while expander < len(distances) and distances[expander] == distances[expander + 1]:
+                        expander += 1
 
             distances.sort()
 
-            for i in range(expander + 1):
+            for i in range(expander):
                 class_list.append(distances[i][1])
 
             class_list.sort()
 
+            # count how many neighbours of each class we have
             for i in class_list:
                 if i not in class_count:
                     class_count[i] = 1
                 else:
                     class_count[i] += 1
 
-        new_point.clas = class_count[max(class_count.values())]
+        # find class with the most amount of neighbours
+        maximum_value = -1
+        new_point_clas = -1
 
+        for i in class_count.items():
+            if i[1] > maximum_value:
+                maximum_value = i[1]
+                new_point_clas = i[0]
+
+        # set class for new point
+        new_point.clas = new_point_clas
+        # add point to the list of points
         self.points.append(new_point)
 
 
@@ -107,64 +127,3 @@ class KNN:
         fig.add_scatter3d(mode='markers', x=x, y=y, z=z, marker={'color': color})
 
         plot(fig, filename='plot.html')
-
-
-k = KNN(3)
-
-k.add_clas(1)
-k.add_clas(2)
-k.add_clas(3)
-
-k.add_known_point(0,0,0,1)
-k.add_known_point(2,2,2,2)
-
-k.plot()
-k.add_new_point(1,1,1)
-
-
-# x = [1, 2, 3, 0]
-# y = [1, 2, 3, 0]
-# z = [1, 2, 3, 0]
-#
-# trace1 = go.Scatter3d(
-#     x=x,
-#     y=y,
-#     z=z,
-#     mode='markers',
-#     marker=dict(
-#     size=12,
-#     color=z,
-#     colorscale='Viridis',
-#     opacity=0.8))
-#
-# pairs = [(0,0), (1,1)]
-#
-#
-# x_lines = list()
-# y_lines = list()
-# z_lines = list()
-#
-# for p in pairs:
-#     for i in range(2):
-#         x_lines.append(x[p[i]])
-#         y_lines.append(x[p[i]])
-#         z_lines.append(x[p[i]])
-#
-# trace2 = go.Scatter3d(
-#     x = x_lines,
-#     y = y_lines,
-#     z = z_lines,
-#     mode = 'lines',
-#     name = 'lines'
-# )
-# data = [trace1, trace2]
-# layout = go.Layout(
-#     margin=dict(
-#     l=0,
-#     r=0,
-#     b=0,
-#     t=0)
-# )
-#
-# fig = go.Figure(data=data, layout=layout)
-# plot(fig, filename='3d-TEST-plot.html')
