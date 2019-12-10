@@ -25,6 +25,10 @@ class FormView(View):
             clas = context['clas']
             show_lines = context['show_lines']
 
+            if self.knn.is_classes_empty() and clas == None:
+                return render(request, 'empty_class_error.html', form.errors)
+
+
             if context['k'] != None:
                 self.knn.set_k(context['k'])
 

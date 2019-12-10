@@ -39,6 +39,12 @@ class Knn:
         else:
             self.classes.append(clas - 1)
 
+    def is_classes_empty(self):
+        if not self.classes:
+            return True
+        else:
+            return False
+
     def reset(self):
         self.classes = []
         self.points = []
