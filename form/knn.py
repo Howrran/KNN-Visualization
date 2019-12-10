@@ -39,6 +39,10 @@ class Knn:
         else:
             self.classes.append(clas - 1)
 
+    def reset(self):
+        self.classes = []
+        self.points = []
+
     def show(self):
         print(f'clases = {self.classes} \npoints = {self.points}')
 
@@ -137,11 +141,8 @@ class Knn:
             z.append(point.z)
             color.append(self.colors[point.clas - 1])
 
-        fig.add_scatter3d(mode='markers+lines', x=x, y=y, z=z, marker={'color': color})
+        fig.add_scatter3d(mode='markers', x=x, y=y, z=z, marker={'color': color})
 
-        #fig.show()
-        #print(help(plot))
-        print(help(fig.add_scatter3d))
         plot(fig, filename='form/templates/plot.html', auto_open=False)
 
     def plot_with_lines(self):

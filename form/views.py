@@ -4,15 +4,19 @@ from .forms import CoordinateInputForm
 from .knn import Knn
 
 class FormView(View):
+    knn = Knn(3)
 
     def get(self, request):
         form = CoordinateInputForm()
+        print('button is pressed')
+        self.knn.reset()
+
         return render(request, 'form.html', {'form' : form})
 
     def post(self, request):
         form = CoordinateInputForm(request.POST)
 
-        knn = Knn(3)
+
 
         if form.is_valid():
             context = form.cleaned_data
@@ -20,13 +24,17 @@ class FormView(View):
             y = context['y']
             z = context['z']
             clas = context['clas']
+            show_lines = context['show_lines']
 
             if clas == None:
-                knn.add_new_point(x, y, z)
+                self.knn.add_new_point(x, y, z)
             else:
-                knn.add_known_point(x, y, z, clas)
+                self.knn.add_known_point(x, y, z, clas)
 
-            knn.plot_with_lines()
+            if show_lines:
+                self.knn.plot_with_lines()
+            else:
+                self.knn.plot()
 
             return render(request, 'form.html', {'context': context, 'form': form})
         else:
