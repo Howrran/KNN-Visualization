@@ -27,7 +27,7 @@ class Point:
 class Knn:
     classes = [] # our known classes
     points = [] # array of points
-    colors = ['red', 'green', 'blue', 'yellow', 'pink', 'black', 'white'] # colors for point of each class
+    colors = ['red', 'green', 'blue', 'yellow', 'pink', 'black', 'white', 'mint', 'orange', 'violet'] # colors for point of each class
 
     def __init__(self, k):
         self.k = k # set k neighbours to check
@@ -45,6 +45,9 @@ class Knn:
 
     def show(self):
         print(f'clases = {self.classes} \npoints = {self.points}')
+
+    def set_k(self, k):
+        self.k = k
 
     # Distance between 2 points
     def get_distance(self, Point1, Point2):

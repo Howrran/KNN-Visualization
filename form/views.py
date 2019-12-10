@@ -8,7 +8,6 @@ class FormView(View):
 
     def get(self, request):
         form = CoordinateInputForm()
-        print('button is pressed')
         self.knn.reset()
 
         return render(request, 'form.html', {'form' : form})
@@ -25,6 +24,9 @@ class FormView(View):
             z = context['z']
             clas = context['clas']
             show_lines = context['show_lines']
+
+            if context['k'] != None:
+                self.knn.set_k(context['k'])
 
             if clas == None:
                 self.knn.add_new_point(x, y, z)
