@@ -20,9 +20,13 @@ class FormView(View):
             y = context['y']
             z = context['z']
             clas = context['clas']
-            knn.add_known_point(x, y, z, clas)
 
-            knn.plot()
+            if clas == None:
+                knn.add_new_point(x, y, z)
+            else:
+                knn.add_known_point(x, y, z, clas)
+
+            knn.plot_with_lines()
 
             return render(request, 'form.html', {'context': context, 'form': form})
         else:
