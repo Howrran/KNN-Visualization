@@ -5,14 +5,23 @@ from math import sqrt
 
 # Class of 3D Point
 class Point:
+    id = 0
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
         self.z = z
+        self.id = Point.id
+        Point.id += 1
 
     # Set Point`s Class
     def set_class(self, clas):
         self.clas = clas
+
+    def show_coordinates(self):
+        return f'x = {self.x}; y = {self.y}; z = {self.z}'
+
+    def __repr__(self):
+        return f'x = {self.x}; y = {self.y}; z = {self.z}'
 
 # Realize KNN algorithm
 class Knn:
@@ -49,31 +58,26 @@ class Knn:
             p.set_class(clas)
             self.points.append(p)
 
-    # add point which class we don`t know
-    def add_new_point(self, x, y, z):
-        new_point = Point(x, y, z)
+    def get_neighbours(self, new_point):
 
-        # class_list is a list of nearest neighbours
+        # neighbours is a list of nearest neighbours
         # class_count is a dict of nearest classes and their amount
-        distances, class_count, class_list = [], {}, []
+        distances, neighbours = [], []
 
         # calculate distace for each point
         for point in self.points:
-            distances.append((self.get_distance(new_point, point), point.clas))
+            if point.id != new_point.id:
+                distances.append((self.get_distance(new_point, point), point))
 
+        distances.sort(key=lambda x: x[0])
         # if we have less than k points, we take all
         if len(distances) < self.k:
             for i in range(len(distances)):
-                class_list.append(distances[i][1])
+                neighbours.append(distances[i][1])
 
-            class_list.sort()
 
-            # count how many neighbours of each class we have
-            for i in class_list:
-                if i not in class_count:
-                    class_count[i] = 1
-                else:
-                    class_count[i] += 1
+            neighbours.sort(key = lambda x: x.clas)
+
         else:
             expander = self.k
 
@@ -84,19 +88,28 @@ class Knn:
                     while expander < len(distances) and distances[expander] == distances[expander + 1]:
                         expander += 1
 
-            distances.sort()
+            distances.sort(key= lambda x: x[0])
 
             for i in range(expander):
-                class_list.append(distances[i][1])
+                neighbours.append(distances[i][1])
 
-            class_list.sort()
+            neighbours.sort(key= lambda x: x.clas)
 
-            # count how many neighbours of each class we have
-            for i in class_list:
-                if i not in class_count:
-                    class_count[i] = 1
-                else:
-                    class_count[i] += 1
+        return neighbours
+
+    # add point which class we don`t know
+    def add_new_point(self, x, y, z):
+
+        class_count = {}
+        new_point = Point(x, y, z)
+        neighbours = self.get_neighbours(new_point)
+
+        # count how many neighbours of each class we have
+        for i in neighbours:
+            if i.clas not in class_count:
+                class_count[i.clas] = 1
+            else:
+                class_count[i.clas] += 1
 
         # find class with the most amount of neighbours
         maximum_value = -1
@@ -129,7 +142,7 @@ class Knn:
         #fig.show()
         #print(help(plot))
         print(help(fig.add_scatter3d))
-        plot(fig, filename='plot.html', auto_open=True)
+        plot(fig, filename='form/templates/plot.html', auto_open=False)
 
     def plot_with_lines(self):
         x, y, z = [], [], []  # arrays of coordinates for Scatter3d
@@ -142,25 +155,23 @@ class Knn:
             z.append(point.z)
             color.append(self.colors[point.clas - 1])
 
-        fig.add_scatter3d(mode='markers', x=x, y=y, z=z, marker={'color': color})
+        fig.add_scatter3d(mode='markers', x=x, y=y, z=z, marker={'color': color, 'size':11})
 
-        pairs = self.points
-
-        x_coor = pairs[-1].x
-        y_coor = pairs[-1].y
-        z_coor = pairs[-1].z
+        new_point = self.points[-1]
 
         x_lines = list()
         y_lines = list()
         z_lines = list()
-
-        for p in pairs:
-            x_lines.append(p.x)
-            x_lines.append(x_coor)
-            y_lines.append(p.y)
-            y_lines.append(y_coor)
-            z_lines.append(p.z)
-            z_lines.append(z_coor)
+        line_color = []
+        neighbours = self.get_neighbours(new_point)
+        for neib in neighbours:
+            x_lines.append(neib.x)
+            x_lines.append(new_point.x)
+            y_lines.append(neib.y)
+            y_lines.append(new_point.y)
+            z_lines.append(neib.z)
+            z_lines.append(new_point.z)
+            line_color.append(self.colors[neib.clas - 1])
 
         fig.add_scatter3d(
             x=x_lines,
@@ -168,9 +179,11 @@ class Knn:
             z=z_lines,
             mode='lines',
             name='lines',
+            #line_color= line_color
         )
 
         # fig.show()
         # print(help(plot))
         #print(help(fig.add_scatter3d))
-        plot(fig, filename='plot.html', auto_open=False)
+
+        plot(fig, filename='form/templates/plot.html', auto_open=False)
