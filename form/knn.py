@@ -2,6 +2,7 @@ import plotly.graph_objs as go
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from math import sqrt
 
+
 # Class of 3D Point
 class Point:
     def __init__(self, x, y, z):
@@ -14,7 +15,7 @@ class Point:
         self.clas = clas
 
 # Realize KNN algorithm
-class KNN:
+class Knn:
     classes = [] # our known classes
     points = [] # array of points
     colors = ['red', 'green', 'blue', 'yellow', 'pink'] # colors for point of each class
@@ -126,4 +127,6 @@ class KNN:
 
         fig.add_scatter3d(mode='markers', x=x, y=y, z=z, marker={'color': color})
 
-        plot(fig, filename='plot.html')
+        #fig.show()
+        #print(help(plot))
+        plot(fig, filename='form/templates/plot.html', auto_open=False)
