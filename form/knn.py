@@ -18,7 +18,7 @@ class Point:
 class Knn:
     classes = [] # our known classes
     points = [] # array of points
-    colors = ['red', 'green', 'blue', 'yellow', 'pink'] # colors for point of each class
+    colors = ['red', 'green', 'blue', 'yellow', 'pink', 'black', 'white'] # colors for point of each class
 
     def __init__(self, k):
         self.k = k # set k neighbours to check
@@ -118,7 +118,24 @@ class Knn:
 
         fig = go.Figure()
         color = []
-        print(self.points)
+        for point in self.points:
+            x.append(point.x)
+            y.append(point.y)
+            z.append(point.z)
+            color.append(self.colors[point.clas - 1])
+
+        fig.add_scatter3d(mode='markers+lines', x=x, y=y, z=z, marker={'color': color})
+
+        #fig.show()
+        #print(help(plot))
+        print(help(fig.add_scatter3d))
+        plot(fig, filename='plot.html', auto_open=True)
+
+    def plot_with_lines(self):
+        x, y, z = [], [], []  # arrays of coordinates for Scatter3d
+
+        fig = go.Figure()
+        color = []
         for point in self.points:
             x.append(point.x)
             y.append(point.y)
@@ -127,6 +144,33 @@ class Knn:
 
         fig.add_scatter3d(mode='markers', x=x, y=y, z=z, marker={'color': color})
 
-        #fig.show()
-        #print(help(plot))
-        plot(fig, filename='form/templates/plot.html', auto_open=False)
+        pairs = self.points
+
+        x_coor = pairs[-1].x
+        y_coor = pairs[-1].y
+        z_coor = pairs[-1].z
+
+        x_lines = list()
+        y_lines = list()
+        z_lines = list()
+
+        for p in pairs:
+            x_lines.append(p.x)
+            x_lines.append(x_coor)
+            y_lines.append(p.y)
+            y_lines.append(y_coor)
+            z_lines.append(p.z)
+            z_lines.append(z_coor)
+
+        fig.add_scatter3d(
+            x=x_lines,
+            y=y_lines,
+            z=z_lines,
+            mode='lines',
+            name='lines',
+        )
+
+        # fig.show()
+        # print(help(plot))
+        #print(help(fig.add_scatter3d))
+        plot(fig, filename='plot.html', auto_open=False)
