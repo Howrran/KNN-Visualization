@@ -165,7 +165,7 @@ class Knn:
             z.append(point.z)
             color.append(self.colors[point.clas - 1])
 
-        fig.add_scatter3d(mode='markers', x=x, y=y, z=z, marker={'color': color, 'size':11})
+        fig.add_scatter3d(mode='markers', x=x, y=y, z=z, marker={'color': color, 'size':7})
 
         new_point = self.points[-1]
 
@@ -195,5 +195,7 @@ class Knn:
         # fig.show()
         # print(help(plot))
         #print(help(fig.add_scatter3d))
+        layout = go.layout(autofill=True)
+        fig.add_scatter3d(layout=layout)
 
         plot(fig, filename='form/templates/plot.html', auto_open=False)

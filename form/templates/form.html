@@ -8,7 +8,7 @@
 <body>
     <h1>Instruction: </h1>
     <h3> x,y,z - coordinates of new point; Class - class of new point( if you don`t know the class leave it empty);
-        <br> enter new K if you want to change it, otherwise leave it empty</h3>
+    <br> Default K = 3, enter new K if you want to change it, otherwise leave it empty</h3>
     <form method="post" enctype="multipart/form-data" action="/form/">
         {% csrf_token %}
         {{ form }}
