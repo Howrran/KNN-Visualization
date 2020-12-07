@@ -1,0 +1,1 @@
+web: gunicorn Cursova_KNN.wsgi --log-file -
