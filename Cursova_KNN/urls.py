@@ -20,6 +20,7 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('form/', include('form.urls')),
-    path('', RedirectView.as_view(url='/form'))
+    path('', RedirectView.as_view(url='/form')),
+    path('/', RedirectView.as_view(url='/form')),
 
 ]
